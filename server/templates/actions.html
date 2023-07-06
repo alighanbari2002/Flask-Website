@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Home Page</title>
+      <link rel="stylesheet"href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+l<body>
+
+      <div class="nav-wrapper">
+            <nav>
+                  <a href="#" class="hover-this"><span>Define Cure Package</span></a>
+                  <a href="http://127.0.0.1:5000/{{current_user}}//Choose_disease" class="hover-this"><span style="color:yellow; font-family: Georgia, serif;">Request Cure Package</span></a>
+                  <div class="cursor"></div>
+            </nav>
+      </div>
+
+      <script>
+alert('🔴 Hey {{current_user}}, you logged in as a user.\n Welcome to the website!')
+            </script>
+
+<script>
+
+(function () {
+
+      const link = document.querySelectorAll('nav > .hover-this');
+      const cursor = document.querySelector('.cursor');
+
+      const animateit = function (e) {
+            const span = this.querySelector('span');
+            const { offsetX: x, offsetY: y } = e,
+            { offsetWidth: width, offsetHeight: height } = this,
+
+            move = 25,
+            xMove = x / width * (move * 2) - move,
+            yMove = y / height * (move * 2) - move;
+
+            span.style.transform = `translate(${xMove}px, ${yMove}px)`;
+
+            if (e.type === 'mouseleave') span.style.transform = '';
+      };
+
+      const editCursor = e => {
+            const { clientX: x, clientY: y } = e;
+            cursor.style.left = x + 'px';
+            cursor.style.top = y + 'px';
+      };
+
+      link.forEach(b => b.addEventListener('mousemove', animateit));
+      link.forEach(b => b.addEventListener('mouseleave', animateit));
+      window.addEventListener('mousemove', editCursor);
+
+})();
+
+</script>
+</body>
+</html>
