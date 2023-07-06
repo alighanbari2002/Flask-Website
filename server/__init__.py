@@ -26,7 +26,7 @@ def index():
     return render_template("actions.html", current_user=auth.current_user())
 
 
-@app.route("/<user>/Choose_disease")
+@app.route("/<user>/choose_disease")
 @auth.login_required
 def disease_menu(user):
     covered_diseases = [
@@ -36,27 +36,27 @@ def disease_menu(user):
             "Mental Health Disorders",
             [
                 "Depression",
-                "Bipolar_disorder",
-                "Anxiety_disorders",
+                "BipolarDisorder",
+                "AnxietyDisorders",
             ],
         ],
         [
             "Cancer",
             [
-                "Breast_cancer",
-                "Lung_cancer",
-                "Prostate_cancer",
-                "Colorectal_cancer",
+                "BreastCancer",
+                "LungCancer",
+                "ProstateCancer",
+                "ColorectalCancer",
                 "Leukemia",
             ],
         ],
         [
             "Genetic Disorders",
-            ["Down_syndrome", "Cystic_fibrosis", "Hemophilia", "Huntington_disease"],
+            ["DownSyndrome", "CysticFibrosis", "Hemophilia", "HuntingtonDisease"],
         ],
         [
             "plastic surgery",
-            ["Botox", "Hair_Transplant", "Breast_Augmentation", "Facelift"],
+            ["Botox", "HairTransplant", "BreastAugmentation", "Facelift"],
         ],
     ]
     return render_template(
