@@ -1,40 +1,50 @@
 body{
-    background-image: url(./bg.jpg);
+    background-image: url(../images/bg.jpg);
     background-size: 100%;
 }
 
 .box {
-    width:150px;
+    width: 14em;
     border:2px solid #ccc;
     text-align:center;
+    margin-left: 2em;
+    margin-top: 3em;
 }
+
 .box ul {
     padding:0;
     margin:0;
     list-style-type:none;
 }
 .box ul li {
-    margin-bottom:1px;
     display:block;
     padding:5px;
     background-color: #D7EEEA;
     color:#bdce01;
-    font:bold 20px arial;
+    font:bold 35px arial;
     cursor:pointer;
+    padding-top: .2em;
+    padding-bottom: .2em;
 }
 .box ul li:hover {
-    background-color:#5b5b58;
+    background-color:#ED905F;
     color:#bdce01;
 }
 .box ul li:hover * {
     display:block;
+    margin-left: .7em;
 }
 .box ul li a {
     display:block;
     color:#bdce01;
-    font:bold 20px arial;
+    font:bold 35px arial;
     text-decoration:none;
+    padding-bottom: .2em;
+    padding-top: .2em;
+    padding-right: .1em;
+    padding-left: .1em;
 }
+
 .box ul li div {
     position:relative;
     left:145px;
