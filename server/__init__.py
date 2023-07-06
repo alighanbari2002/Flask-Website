@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
+import sqlite3
 
 app = Flask(__name__, static_folder="assets")
 auth = HTTPBasicAuth()
@@ -27,11 +28,46 @@ def index():
 
 @app.route("/<user>/Choose_disease")
 @auth.login_required
-def menu(user):
-    print(user)
-    # {'WWW-Authenticate': 'Basic realm="Login required"'}
-    # return redirect(url_for('index'))
-    return ""
+def disease_menu(user):
+    covered_diseases = [
+        ["Infectious Diseases", ["Influenza", "Tuberculosis", "Malaria"]],
+        ["Neurological Disorders", ["Alzheimer", "Stroke", "Epilepsy"]],
+        [
+            "Mental Health Disorders",
+            [
+                "Depression",
+                "Bipolar_disorder",
+                "Anxiety_disorders",
+            ],
+        ],
+        [
+            "Cancer",
+            [
+                "Breast_cancer",
+                "Lung_cancer",
+                "Prostate_cancer",
+                "Colorectal_cancer",
+                "Leukemia",
+            ],
+        ],
+        [
+            "Genetic Disorders",
+            ["Down_syndrome", "Cystic_fibrosis", "Hemophilia", "Huntington_disease"],
+        ],
+        [
+            "plastic surgery",
+            ["Botox", "Hair_Transplant", "Breast_Augmentation", "Facelift"],
+        ],
+    ]
+    return render_template(
+        "diseases.html", diseases=covered_diseases, current_user=user
+    )
+
+
+@app.route("/<user>/<disease>/request_cure_package")
+@auth.login_required
+def request_cure_package(user, disease):
+    return "" + disease + "   " + user
 
 
 if __name__ == "__main__":

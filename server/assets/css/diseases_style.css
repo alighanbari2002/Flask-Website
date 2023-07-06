@@ -1,0 +1,46 @@
+body{
+    background-image: url(./bg.jpg);
+    background-size: 100%;
+}
+
+.box {
+    width:150px;
+    border:2px solid #ccc;
+    text-align:center;
+}
+.box ul {
+    padding:0;
+    margin:0;
+    list-style-type:none;
+}
+.box ul li {
+    margin-bottom:1px;
+    display:block;
+    padding:5px;
+    background-color: #D7EEEA;
+    color:#bdce01;
+    font:bold 20px arial;
+    cursor:pointer;
+}
+.box ul li:hover {
+    background-color:#5b5b58;
+    color:#bdce01;
+}
+.box ul li:hover * {
+    display:block;
+}
+.box ul li a {
+    display:block;
+    color:#bdce01;
+    font:bold 20px arial;
+    text-decoration:none;
+}
+.box ul li div {
+    position:relative;
+    left:145px;
+    top:-29px;
+    display:none;
+}
+.box ul li div ul {
+    position:absolute;
+}

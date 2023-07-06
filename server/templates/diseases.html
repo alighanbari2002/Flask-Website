@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose disease</title>
+
+  <link rel="stylesheet"href="{{ url_for('static', filename='css/diseases_style.css') }}">
+
+
+</head>
+<body>
+
+    <div class="box">
+        <ul>
+            {% for category in diseases %}
+                <li class="havSub">
+                {{category[0]}}
+                <div>
+                    <ul>
+                        {% for disease in category[1] %}
+                            <li> <a href="http://127.0.0.1:5000/{{current_user}}/{{disease}}/request_cure_package"> {{disease}} </a> </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+</body>
+</html>
