@@ -92,7 +92,13 @@ def disease_menu(user):
 
 @app.route("/<user>/<disease>/choose_package")
 def request_cure_package(user, disease):
-    return render_template("packages.html")
+    conn = sqlite3.connect("E:\\Web-Development\\server\\database\\cure_packages.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM packages")
+    all_available_packages = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template("packages.html", packages=all_available_packages)
 
 
 if __name__ == "__main__":

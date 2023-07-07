@@ -11,52 +11,20 @@
 <h2 class="heroText">List of Packages:</h2>
 <body>
     <div class="backHero">
-        
-        <div class="listItem">
-            <img class="doctorHero" src="{{ url_for('static', filename='images/doctor.png') }}" alt="doctors"><br />
-            <ul>
-                <li class="listDesc">Iran Province: Tehran</li>
-                <li class="listDesc">Start Date: 2024-01-01</li>
-                <li class="listDesc">Finish Date: 2024-01-16</li>
-                <li class="listDesc">Doctor: Dr. Rajabi</li>
-                <li class="listDesc">Price: 250$ </li>
-            </ul>
-            <form action="/submit" method="POST`">
-                <input type="hidden" name="data" placeholder="EnterData">
-                <button class="chooseButton" type="submit">Choose</button>
-            </form>           
-        </div>
-
-        <div class="listItem">
-            <img class="doctorHero" src="{{ url_for('static', filename='images/doctor.png') }}" alt="doctors"><br />
-            <ul>
-                <li class="listDesc">Iran Province: Tehran</li>
-                <li class="listDesc">Start Date: 2024-01-01</li>
-                <li class="listDesc">Finish Date: 2024-01-16</li>
-                <li class="listDesc">Doctor: Dr. Rajabi</li>
-                <li class="listDesc">Price: 250$ </li>
-            </ul>
-            <form action="/submit" method="POST`">
-                <input type="hidden" name="data" placeholder="EnterData">
-                <button class="chooseButton" type="submit">Choose</button>
-            </form>           
-        </div>
-
-        <div class="listItem">
-            <img class="doctorHero" src="{{ url_for('static', filename='images/doctor.png') }}" alt="doctors"><br />
-            <ul>
-                <li class="listDesc">Iran Province: Tehran</li>
-                <li class="listDesc">Start Date: 2024-01-01</li>
-                <li class="listDesc">Finish Date: 2024-01-16</li>
-                <li class="listDesc">Doctor: Dr. Rajabi</li>
-                <li class="listDesc">Price: 250$ </li>
-            </ul>
-            <form action="/submit" method="POST`">
-                <input type="hidden" name="data" placeholder="EnterData">
-                <button class="chooseButton" type="submit">Choose</button>
-            </form>           
-        </div>
-
+        {% for p in packages %}
+            <div class="listItem">
+                <img class="doctorHero" src="{{ url_for('static', filename='images/doctor.png') }}" alt="doctors"><br />
+                <ul>
+                    {% for i in range(7) %}
+                        <li class="listDesc">{{p[i+1]}}</li>
+                    {% endfor %}
+                </ul>
+                <form action="/submit" method="POST`">
+                    <input type="hidden" name="data" placeholder="EnterData">
+                    <button class="chooseButton" type="submit">Choose</button>
+                </form>
+            </div>
+        {% endfor %}
     </div>
 </body>
 
