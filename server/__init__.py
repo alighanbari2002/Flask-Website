@@ -26,6 +26,13 @@ def verify_password(username, password):
     return USER_UNDEFINED
 
 
+def get_role(username):
+    for i in range(len(users)):
+        if users[i][0] == username:
+            return users[i][2]
+    return -1
+
+
 @app.route("/", methods=["POST", "GET"])
 def index():
     status = DEAFAULT_VALUE
@@ -40,7 +47,7 @@ def index():
 
 @app.route("/<user>/menu")
 def menu(user):
-    return render_template("actions.html", current_user=user)
+    return render_template("actions.html", current_user=user, role=get_role(user))
 
 
 # alert: as a 'user' must be handled!

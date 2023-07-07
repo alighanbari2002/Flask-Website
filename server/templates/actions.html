@@ -18,9 +18,15 @@
       </div>
 
       <script>
-            alert('🔊 Hey {{current_user}}, you logged in as a user.\n Welcome to the website!')
+            var role = '';
+            if ('{{ role|lower }}' == 'true') {
+                  role = 'admin';
+            } else {
+                  role = 'user';
+            }
+            alert('🔊 Hey {{current_user}}, you logged in as a '+ role + '.\n Welcome to the website!')
       </script>
-      
+
 <script>
 (function () {
 
