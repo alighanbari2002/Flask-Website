@@ -11,9 +11,24 @@ users = [
     ["sajad", generate_password_hash("sajad.password"), True],
 ]
 
+supporters = [
+    "Pouya Fekri",
+    "Mohammad sajad Naghizadeh",
+    "Soudabeh Mohammad hashemi",
+    "Arash Mohammad poor",
+    "Matin Zamani",
+]
+
+
+SUPPORTER_INDEX = 0
 WRONG_PASSWORD = -1
 USER_UNDEFINED = -2
 DEAFAULT_VALUE = -3
+
+
+def calc_supporter_index():
+    SUPPORTER_INDEX = (SUPPORTER_INDEX + 1) % len(supporters)
+    return SUPPORTER_INDEX
 
 
 def verify_password(username, password):
@@ -47,10 +62,11 @@ def index():
 
 @app.route("/<user>/menu")
 def menu(user):
+    role = get_role(user)
+    if role == True:
+        return redirect(url_for("verify_package", user=user))
     param = request.args.get("show", default=False, type=bool)
-    return render_template(
-        "actions.html", current_user=user, role=get_role(user), is_alert=param
-    )
+    return render_template("actions.html", current_user=user, role=role, is_alert=param)
 
 
 @app.route("/<user>/choose_disease")
@@ -172,5 +188,32 @@ def fill_out_form(user, disease):
     )
 
 
+@app.route("/<user>/verify_package", methods=["POST", "GET"])
+def verify_package(user):
+    conn = sqlite3.connect("E:\\Web-Development\\server\\database\\cure_packages.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT * FROM packages WHERE patient IS NOT NULL AND is_verified = ?", (0,)
+    )
+    unverified_packages = cursor.fetchall()
+    is_empty = False
+    if len(unverified_packages) == 0:
+        is_empty = True
+    cursor.close()
+    conn.close()
+    return render_template(
+        "verify.html", is_empty=is_empty, packages=unverified_packages
+    )
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+# verify package:
+
+# conn = sqlite3.connect("E:\\Web-Development\\server\\database\\patients.db")
+# cursor = conn.cursor()
+# query = "UPDATE datas SET supporter = ? WHERE id = ?"
+# cursor.execute(query, (supporters[calc_supporter_index()], id))
+# conn.commit()

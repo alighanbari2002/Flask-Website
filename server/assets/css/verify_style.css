@@ -1,0 +1,125 @@
+*{
+    margin: 0;
+    padding: 0;
+    outline: 0;
+}
+
+body{
+    background-color: #F5F5F7;
+}
+
+.firstHero {
+    border-bottom: 1px solid black;
+    text-align: center;
+    font-style: italic;
+    margin-top: 3em;
+    font-size: 23px;
+    margin-left: 30vw;
+    margin-right: 30vw;
+    font-family:'Segoe UI';
+}
+
+.listContainer{
+    background-color: #EBCFAE;
+    justify-content: center;
+    align-items: center;
+}
+
+.listItemContainer{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2.5em;
+    margin-bottom: 5.5em;
+}
+
+.listItem{
+    background-color: #AECAEB;
+    margin-top: 3.5em;
+    margin-bottom: 3.5em;
+    border-radius: 1em;
+    width: 30vw;
+    height: 80vh;
+    display: block;
+    justify-content: center;
+}
+
+.profileContainer{
+    background-color: #FFFFFF;
+    height: 30vh;
+    display: flex;
+    justify-content: center;
+    border-radius: 1em;
+    border-bottom: 3px solid gray;
+}
+
+.profileClass{
+    height: 100%;
+    width: 60%;
+}
+
+.patientSpecs{
+    margin-top: 1.2em;
+    margin-left: 5%;
+    font-family: sans-serif;
+    font-size: 18px;
+}
+
+.docBigContainer{
+    display: flex;
+    justify-content: center;
+    margin-top: 1.7em;
+}
+
+.docContainer{
+    text-align: center;
+    background-color: #3F8FEB;
+    border-radius: 1.2em;
+    width: 7em;
+    height: 2em;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.docContainer:hover{
+    background-color: #459CFF;
+    box-shadow: 1px 1px 1px 2px gray;
+}
+
+
+.docButton{
+    color: white;
+    text-decoration: none;
+    font-family: sans-serif;
+    font-size: 1.2em;
+}
+
+.docButton:hover{
+    color: black;
+}
+
+.verifyBigContainer{
+    display: flex;
+    justify-content: center;
+    margin-top: 2.8em;
+    border-radius: 1em;
+}
+
+.verifyButton{
+    border: none;
+    outline: none;
+    background-color: #3FEB45;
+    font-family: sans-serif;
+    font-size: 1.2em;
+    width: 3.5em;
+    height: 2em;
+    border-radius: 3em;
+}
+
+.verifyButton:hover{
+    cursor: pointer;
+    color: white;
+    box-shadow: 0px 0px 0px 2px gray;
+    background-color: #207523;
+}
