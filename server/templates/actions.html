@@ -18,15 +18,17 @@
             </nav>
       </div>
 
-      <script>
-            var role = '';
-            if ('{{ role|lower }}' == 'true') {
-                  role = 'verifier';
-            } else {
-                  role = 'user';
-            }
-            alert('🔊 Hey {{current_user}}, you logged in as a '+ role + '.\n Welcome to the website!')
-      </script>
+      {% if not is_alert %}
+            <script>
+                  var role = '';
+                  if ('{{ role|lower }}' == 'true') {
+                        role = 'verifier';
+                  } else {
+                        role = 'user';
+                  }
+                  alert('📢 Hey {{current_user}}, you logged in as a '+ role + '.\n Welcome to the website!')
+            </script>
+      {% endif %}
 
 <script>
 (function () {

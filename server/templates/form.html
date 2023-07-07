@@ -10,7 +10,7 @@
 
 <body class="bodyPRQ">
     <div class="formHero">
-        <form action="/{{current_user}}/{{selected_disease}}/fill_out_form" method="POST">
+        <form action="/{{current_user}}/{{selected_disease}}/fill_out_form?package=8" method="POST" enctype="multipart/form-data">
             <p>Fullname:</p>
             <input placeholder="firstname" class="normalInput" type="text" name="firstname">
             <input placeholder="lastname" class="normalInput" type="text" name="lastname">
@@ -23,7 +23,7 @@
             <p>Description:</p>
             <textarea class=descBox name="extraDescription" cols="80vw" rows="10" placeholder="Please enter your description"></textarea>
             <p class="uploadNote">*please upload prerequisites for this package below:</p>
-            <input id="uploadAct" type="file">
+            <input id="uploadAct" type="file" name="file">
             <label class="uploadButton" for="uploadAct">Upload File</label>
             <input class="submitButton" type="submit" name="action" value="Submit">
             <input class="cancelButton" type="submit" name="action" value="Cancel">

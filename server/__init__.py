@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
+import sqlite3, os
 
 app = Flask(__name__, static_folder="assets")
 
@@ -47,7 +47,10 @@ def index():
 
 @app.route("/<user>/menu")
 def menu(user):
-    return render_template("actions.html", current_user=user, role=get_role(user))
+    param = request.args.get("show", default=False, type=bool)
+    return render_template(
+        "actions.html", current_user=user, role=get_role(user), is_alert=param
+    )
 
 
 @app.route("/<user>/choose_disease")
@@ -111,20 +114,27 @@ def request_cure_package(user, disease):
 
 @app.route("/<user>/<disease>/fill_out_form", methods=["POST", "GET"])
 def fill_out_form(user, disease):
+    package_id = request.args.get("package", default=-1, type=int)
     if request.method == "POST":
         action = request.form.get("action")
         if action == "Submit":
-            # Submit button was clicked
-            # Perform submit action here
-            print("Form submitted!")
-        elif action == "Cancel":
-            # Cancel button was clicked
-            # Perform cancel action here
-            print("Form canceled!")
-        else:
-            # No button was clicked or unknown action
-            return "Unknown action!"
-    package_id = request.args.get("package", default=-1, type=int)
+            firstname = request.form["firstname"]
+            lastname = request.form["lastname"]
+            country = request.form["country"]
+            zipcode = request.form["zipcode"]
+            extraDescription = request.form["extraDescription"]
+            file = request.files["file"]
+            if file:
+                file_name = file.filename
+                folder_path = (
+                    "./server/patient documents/" + user + " (" + disease + ")"
+                )
+                os.mkdir(folder_path)
+                file.save(folder_path + "/" + file_name)
+                # add to patient database
+
+        return redirect(url_for("menu", user=user, show=True))
+
     return render_template(
         "form.html",
         current_user=user,
