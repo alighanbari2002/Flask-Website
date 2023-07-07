@@ -1,0 +1,145 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+p{
+    font-family: sans-serif;
+    font-weight: bold;
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+}
+
+textarea{
+    resize: none;
+    padding-left: 0.5em;
+    padding-top: 0.4em;
+}
+
+input{
+    padding-left: 0.2em;
+}
+
+input[type="file"]{
+    display: none;
+}
+
+.uploadButton{
+    display: block;
+}
+
+body{
+    background-image: url(../images/pBack.jpg);
+    background-size: 100%;
+}
+
+.bodyPRQ{
+    margin: 0;
+    font-family: sans-serif;
+}
+
+.formHero{
+    background-color: #f6f5f5;
+    margin: 10% 10% 10% 10%;
+    border-radius: 0.5%;
+    padding: 1rem;
+    box-shadow: 1px 1px 3px 3px rgb(164, 164, 164);
+}
+
+.normalInput{
+    border: none;
+    width: 20%;
+    height: 3vh;
+    background-color: #f6f5f5;
+    margin-right: 3vw;
+    border-bottom: 1px solid black;
+    outline: none;
+    padding-right: 0;
+    width: 8vw;
+    margin-left: 1vw;
+}
+
+.descBox{
+    border: none;
+    outline: none;
+    border-radius: 0.5em;
+}
+
+.uploadNote{
+    font-size: 0.9rem;
+    font-family:'Segoe UI';
+    font-weight: normal;
+}
+
+.uploadButton{
+    border: none;
+    background-color: #EBE83D;
+    width: 8em;
+    height: 2em;
+    font-size: small;
+    border-radius: 6em;
+    text-align: center;
+    padding-top: 1em;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+.submitButton{
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 6em;
+    font-size: larger;
+    margin-top: 3vh;
+    margin-bottom: 2vh;
+    margin-left: 40%;
+    width: 5em;
+    height: 3em;
+    text-align: center;
+    background-color: #54B1EB;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: small;
+    color: black;
+    object-position: center;
+    /*color: #BBDAED;*/
+}
+
+.cancelButton{
+    border: none;
+    outline: none;
+    background-color: #E8931C;
+    font-family: sans-serif;
+    width: 5em;
+    height: 3em;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 5em;
+}
+
+.uploadButton:hover{
+    cursor: pointer;
+    box-shadow: 1px 1px 1px 1px gray;
+    color: white;
+}
+
+.submitButton:hover{
+    cursor: pointer;
+    box-shadow: 1px 1px 1px 1px gray;
+    color: white;
+    background-color: #1C9AE8;
+}
+
+.cancelButton:hover {
+    background-color: #9C5B00;
+    cursor: pointer;
+    box-shadow: 1px 1px 1px 1px gray;
+    color: white;
+}
+
+::placeholder{
+    color: gray;
+    font-style: italic;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: lighter;
+}

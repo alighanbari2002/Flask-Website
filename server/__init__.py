@@ -50,9 +50,6 @@ def menu(user):
     return render_template("actions.html", current_user=user, role=get_role(user))
 
 
-# alert: as a 'user' must be handled!
-
-
 @app.route("/<user>/choose_disease")
 def disease_menu(user):
     covered_diseases = [
@@ -94,15 +91,46 @@ def disease_menu(user):
 def request_cure_package(user, disease):
     conn = sqlite3.connect("E:\\Web-Development\\server\\database\\cure_packages.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM packages")
-    all_available_packages = cursor.fetchall()
+    cursor.execute(
+        "SELECT * FROM packages WHERE patient IS NULL AND disease = ?", (disease,)
+    )
+    available_packages = cursor.fetchall()
+    is_empty = False
+    if len(available_packages) == 0:
+        is_empty = True
     cursor.close()
     conn.close()
-    return render_template("packages.html", packages=all_available_packages)
+    return render_template(
+        "packages.html",
+        packages=available_packages,
+        current_user=user,
+        selected_disease=disease,
+        is_empty=is_empty,
+    )
+
+
+@app.route("/<user>/<disease>/fill_out_form", methods=["POST", "GET"])
+def fill_out_form(user, disease):
+    if request.method == "POST":
+        action = request.form.get("action")
+        if action == "Submit":
+            # Submit button was clicked
+            # Perform submit action here
+            print("Form submitted!")
+        elif action == "Cancel":
+            # Cancel button was clicked
+            # Perform cancel action here
+            print("Form canceled!")
+        else:
+            # No button was clicked or unknown action
+            return "Unknown action!"
+    package_id = request.args.get("package", default=-1, type=int)
+    return render_template(
+        "form.html",
+        current_user=user,
+        selected_disease=disease,
+    )
 
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-#  return redirect(url_for('user', name = username))
