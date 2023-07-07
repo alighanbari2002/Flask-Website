@@ -118,21 +118,51 @@ def fill_out_form(user, disease):
     if request.method == "POST":
         action = request.form.get("action")
         if action == "Submit":
+            conn = sqlite3.connect(
+                "E:\\Web-Development\\server\\database\\cure_packages.db"
+            )
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE packages SET patient = ? WHERE id = ?", (user, package_id)
+            )
+            conn.commit()
+            cursor.close()
+            conn.close()
+
             firstname = request.form["firstname"]
             lastname = request.form["lastname"]
             country = request.form["country"]
             zipcode = request.form["zipcode"]
             extraDescription = request.form["extraDescription"]
             file = request.files["file"]
+            file_path = ""
             if file:
                 file_name = file.filename
                 folder_path = (
                     "./server/patient documents/" + user + " (" + disease + ")"
                 )
                 os.mkdir(folder_path)
-                file.save(folder_path + "/" + file_name)
-                # add to patient database
+                file_path = folder_path + "/" + file_name
+                file.save(file_path)
 
+            conn = sqlite3.connect("E:\\Web-Development\\server\\database\\patients.db")
+            cursor = conn.cursor()
+            insert_query = """
+                            INSERT INTO datas (firstname, lastname, country, zipcode, diseases, extra_description, evidence_path)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)"""
+            data = (
+                firstname,
+                lastname,
+                country,
+                zipcode,
+                disease,
+                extraDescription,
+                file_path,
+            )
+            cursor.execute(insert_query, data)
+            conn.commit()
+            cursor.close()
+            conn.close()
         return redirect(url_for("menu", user=user, show=True))
 
     return render_template(
