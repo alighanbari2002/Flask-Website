@@ -1,33 +1,52 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
 app = Flask(__name__, static_folder="assets")
-auth = HTTPBasicAuth()
 
-users = {
-    "ali": generate_password_hash("ali.password"),
-    "behrad": generate_password_hash("behrad.password"),
-    "javad": generate_password_hash("javad.password"),
-    "sajad": generate_password_hash("sajad.password"),
-}
+users = [
+    ["ali", generate_password_hash("ali.password"), False],
+    ["behrad", generate_password_hash("behrad.password"), False],
+    ["javad", generate_password_hash("javad.password"), False],
+    ["sajad", generate_password_hash("sajad.password"), True],
+]
+
+WRONG_PASSWORD = -1
+USER_UNDEFINED = -2
+DEAFAULT_VALUE = -3
 
 
-@auth.verify_password
 def verify_password(username, password):
-    if username in users and check_password_hash(users.get(username), password):
-        return username
+    for i in range(len(users)):
+        if users[i][0] == username:
+            if check_password_hash(users[i][1], password):
+                return i
+            else:
+                return WRONG_PASSWORD
+    return USER_UNDEFINED
 
 
-@app.route("/")
-@auth.login_required
+@app.route("/", methods=["POST", "GET"])
 def index():
-    return render_template("actions.html", current_user=auth.current_user())
+    status = DEAFAULT_VALUE
+    if request.method == "POST":
+        username = request.form["Username"]
+        password = request.form["Password"]
+        status = verify_password(username, password)
+        if status >= 0:
+            return redirect(url_for("menu", user=username))
+    return render_template("login.html", stat=status)
+
+
+@app.route("/<user>/menu")
+def menu(user):
+    return render_template("actions.html", current_user=user)
+
+
+# alert: as a 'user' must be handled!
 
 
 @app.route("/<user>/choose_disease")
-@auth.login_required
 def disease_menu(user):
     covered_diseases = [
         ["Infectious Diseases", ["Influenza", "Tuberculosis", "Malaria"]],
@@ -64,10 +83,9 @@ def disease_menu(user):
     )
 
 
-@app.route("/<user>/<disease>/request_cure_package")
-@auth.login_required
+@app.route("/<user>/<disease>/choose_package")
 def request_cure_package(user, disease):
-    return "" + disease + "   " + user
+    return render_template("packages.html")
 
 
 if __name__ == "__main__":

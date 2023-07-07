@@ -1,0 +1,79 @@
+*{
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+}
+
+body{
+    background-color: #f7f7f7;
+}
+
+div{
+    display: block;
+}
+
+.heroText{
+    margin-left: 1em;
+    margin-top: 1em;
+    font-family: 'Lucida Sans Unicode';
+    color: #333;
+}
+
+.backHero{
+    width: 90vw;
+    height: 90vh;
+    background-color: #FFF;
+    border-radius: 1em;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+    padding: 1em;
+    box-shadow: 1px 1px 1px 1px #efefef;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.listItem{
+    border: 2px solid #efefef;
+    width: 25%;
+    height: 45%;
+    border-radius: 1%;
+    box-shadow: 1px 1px 1px 1px solid black;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.doctorHero{
+    width: 80%;
+    height: 40%;
+    margin-left: 10%;
+    margin-right: 10%;
+    position: relative;
+}
+
+.listDesc{
+    margin-bottom: .6em;
+    list-style-type: none;
+    font-family: 'Lucida Sans Regular';
+    display: block;
+}
+
+.chooseButton{
+    background-color: #6AEB8E;
+    width: 5em;
+    font-size: 23px;
+    border-radius: 1em;
+    margin-top: 1em;
+    font-family: 'Trebuchet MS';
+    font-weight: bold;
+}
+
+.chooseButton:hover{
+    cursor: pointer;
+    color: white;
+    background-color: #52EB7D;
+    font-size: 24px;
+}

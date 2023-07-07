@@ -16,6 +16,7 @@ body{
     margin:0;
     list-style-type:none;
 }
+
 .box ul li {
     display:block;
     padding:5px;
@@ -26,14 +27,17 @@ body{
     padding-top: .2em;
     padding-bottom: .2em;
 }
+
 .box ul li:hover {
     background-color:#ED905F;
     color:#bdce01;
 }
+
 .box ul li:hover * {
     display:block;
     margin-left: .7em;
 }
+
 .box ul li a {
     display:block;
     color:#bdce01;
@@ -51,6 +55,7 @@ body{
     top:-29px;
     display:none;
 }
+
 .box ul li div ul {
     position:absolute;
 }
