@@ -193,17 +193,30 @@ def verify_package(user):
     conn = sqlite3.connect("E:\\Web-Development\\server\\database\\cure_packages.db")
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT * FROM packages WHERE patient IS NOT NULL AND is_verified = ?", (0,)
+        "SELECT patient FROM packages WHERE patient IS NOT NULL AND is_verified = ?",
+        (0,),
     )
-    unverified_packages = cursor.fetchall()
-    is_empty = False
-    if len(unverified_packages) == 0:
-        is_empty = True
+    rows = cursor.fetchall()
+    result = []
+    for row in rows:
+        result.append(row[0])
     cursor.close()
     conn.close()
-    return render_template(
-        "verify.html", is_empty=is_empty, packages=unverified_packages
+
+    conn = sqlite3.connect("E:\\Web-Development\\server\\database\\patients.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT firstname, lastname, country, zipcode, diseases, extra_description, evidence_path FROM datas WHERE supporter IS NULL"
     )
+    rows = cursor.fetchall()
+    unverified_packages = []
+    for row in rows:
+        unverified_packages.append(row)
+    cursor.close()
+    conn.close()
+
+    print(unverified_packages)
+    return render_template("verify.html", packages=unverified_packages)
 
 
 if __name__ == "__main__":

@@ -13,80 +13,34 @@
     <div class="firstHero">List of Packages to be Verified</div>
     <div class="listContainer">
         <div class="listItemContainer">
-
-            <div class="listItem">
-                <div class="profileContainer">
-                    <img class="profileClass" src="{{ url_for('static', filename='images/profile.png') }}" alt="patient's profile">
-                </div>
-                <p class="patientSpecs">Fullname: </p>
-                <p class="patientSpecs">Country:</p>
-                <p class="patientSpecs">Zipcode: </p>
-                <p class="patientSpecs">Description: I had pneumonia for twelve years and I haven't had
-                    the funds to cure it. my doctors say I need inner lung surgery.
-                    I want to do a 5000$ surgery with 1000$ and put the rest of it in my pockets and go to hawaii with my grandchildren.
-                </p>
-                <div class="docBigContainer">
-                    <div class="docContainer">
-                        <a class="docButton" href="#">Documents</a>
-                    </div>
-                </div>
-                <div class="verifyBigContainer">
-                    <form action="submit" method="POST">
-                        <input type="hidden" name="" id="">
-                        <input class="verifyButton" type="submit" value="Verify">
-                    </form>
-                </div>
-            </div>
-
-
-            <div class="listItem">
-                <div class="profileContainer">
-                    <img class="profileClass" src="./css/profile.PNG" alt="patient's profile">
-                </div>
-                <p class="patientSpecs">Fullname: </p>
-                <p class="patientSpecs">Country:</p>
-                <p class="patientSpecs">Zipcode: </p>
-                <p class="patientSpecs">Description: I had pneumonia for twelve years and I haven't had
-                    the funds to cure it. my doctors say I need inner lung surgery.
-                    I want to do a 5000$ surgery with 1000$ and put the rest of it in my pockets and go to hawaii with my grandchildren.
-                </p>
-                <div class="docBigContainer">
-                    <div class="docContainer">
-                        <a class="docButton" href="#">Documents</a>
-                    </div>
-                </div>
-                <div class="verifyBigContainer">
-                    <form action="submit" method="POST">
-                        <input type="hidden" name="" id="">
-                        <input class="verifyButton" type="submit" value="Verify">
-                    </form>
-                </div>
-            </div>
-
-            <div class="listItem">
-                <div class="profileContainer">
-                    <img class="profileClass" src="./css/profile.PNG" alt="patient's profile">
-                </div>
-                <p class="patientSpecs">Fullname: </p>
-                <p class="patientSpecs">Country:</p>
-                <p class="patientSpecs">Zipcode: </p>
-                <p class="patientSpecs">Description: I had pneumonia for twelve years and I haven't had
-                    the funds to cure it. my doctors say I need inner lung surgery.
-                    I want to do a 5000$ surgery with 1000$ and put the rest of it in my pockets and go to hawaii with my grandchildren.
-                </p>
-                <div class="docBigContainer">
-                    <div class="docContainer">
-                        <a class="docButton" href="#">Documents</a>
-                    </div>
-                </div>
-                <div class="verifyBigContainer">
-                    <form action="submit" method="POST">
-                        <input type="hidden" name="" id="">
-                        <input class="verifyButton" type="submit" value="Verify">
-                    </form>
-                </div>
-            </div>
             
+            {% for p in packages %}
+                <div class="listItem">
+                    <div class="profileContainer">
+                        <img class="profileClass" src="{{ url_for('static', filename='images/profile.png') }}" alt="patient's profile">
+                    </div>
+                    <p class="patientSpecs">Fullname: {{p[8]}}</p>
+                    <p class="patientSpecs">Country:</p>
+                    <p class="patientSpecs">Zipcode: </p>
+                    <p class="patientSpecs">Disease: </p>
+                    <p class="patientSpecs">Description: I had pneumonia for twelve years and I haven't had
+                        the funds to cure it. my doctors say I need inner lung surgery.
+                        I want to do a 5000$ surgery with 1000$ and put the rest of it in my pockets and go to hawaii with my grandchildren.
+                    </p>
+                    <div class="docBigContainer">
+                        <div class="docContainer">
+                            <a class="docButton" href="#">Documents</a>
+                        </div>
+                    </div>
+                    <div class="verifyBigContainer">
+                        <form action="submit" method="POST">
+                            <input type="hidden" name="" id="">
+                            <input class="verifyButton" type="submit" value="Verify">
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+
         </div>
     </div>
 </body>
