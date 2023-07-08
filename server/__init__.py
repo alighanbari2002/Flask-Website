@@ -108,7 +108,7 @@ def disease_menu(user):
 
 @app.route("/<user>/<disease>/choose_package")
 def request_cure_package(user, disease):
-    conn = sqlite3.connect("E:\\Web-Development\\server\\database\\cure_packages.db")
+    conn = sqlite3.connect("./server/databases/cure_packages.db")
     cursor = conn.cursor()
     cursor.execute(
         "SELECT * FROM packages WHERE patient IS NULL AND disease = ?", (disease,)
@@ -134,9 +134,7 @@ def fill_out_form(user, disease):
     if request.method == "POST":
         action = request.form.get("action")
         if action == "Submit":
-            conn = sqlite3.connect(
-                "E:\\Web-Development\\server\\database\\cure_packages.db"
-            )
+            conn = sqlite3.connect("./server/databases/cure_packages.db")
             cursor = conn.cursor()
             cursor.execute(
                 "UPDATE packages SET patient = ? WHERE id = ?", (user, package_id)
@@ -161,7 +159,7 @@ def fill_out_form(user, disease):
                 file_path = folder_path + "/" + file_name
                 file.save(file_path)
 
-            conn = sqlite3.connect("E:\\Web-Development\\server\\database\\patients.db")
+            conn = sqlite3.connect("./server/databases/patients.db")
             cursor = conn.cursor()
             insert_query = """
                             INSERT INTO datas (firstname, lastname, country, zipcode, diseases, extra_description, evidence_path)
@@ -190,7 +188,7 @@ def fill_out_form(user, disease):
 
 @app.route("/<user>/verify_package", methods=["POST", "GET"])
 def verify_package(user):
-    conn = sqlite3.connect("E:\\Web-Development\\server\\database\\cure_packages.db")
+    conn = sqlite3.connect("./server/databases/cure_packages.db")
     cursor = conn.cursor()
     cursor.execute(
         "SELECT patient FROM packages WHERE patient IS NOT NULL AND is_verified = ?",
@@ -203,7 +201,7 @@ def verify_package(user):
     cursor.close()
     conn.close()
 
-    conn = sqlite3.connect("E:\\Web-Development\\server\\database\\patients.db")
+    conn = sqlite3.connect("./server/databases/patients.db")
     cursor = conn.cursor()
     cursor.execute(
         "SELECT firstname, lastname, country, zipcode, diseases, extra_description, evidence_path FROM datas WHERE supporter IS NULL"
@@ -225,7 +223,7 @@ if __name__ == "__main__":
 
 # verify package:
 
-# conn = sqlite3.connect("E:\\Web-Development\\server\\database\\patients.db")
+# conn = sqlite3.connect("./server/databases/patients.db")
 # cursor = conn.cursor()
 # query = "UPDATE datas SET supporter = ? WHERE id = ?"
 # cursor.execute(query, (supporters[calc_supporter_index()], id))
