@@ -151,12 +151,11 @@ def fill_out_form(user, disease):
             file = request.files["file"]
             file_path = ""
             if file:
-                file_name = file.filename
                 folder_path = (
                     "./server/patient documents/" + user + " (" + disease + ")"
                 )
+                file_path = folder_path + "/" + file.filename
                 os.mkdir(folder_path)
-                file_path = folder_path + "/" + file_name
                 file.save(file_path)
 
             conn = sqlite3.connect("./server/databases/patients.db")

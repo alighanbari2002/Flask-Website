@@ -17,6 +17,7 @@ cursor.execute(
     patient TEXT
 );"""
 )
+
 conn.commit()
 
 for i in range(11):
