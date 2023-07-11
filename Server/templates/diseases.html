@@ -17,7 +17,7 @@
                 <div>
                     <ul>
                         {% for disease in category[1] %}
-                            <li> <a class="subs" href="http://127.0.0.1:5000/{{current_user}}/{{disease}}/choose_package"> {{disease}} </a> </li>
+                            <li> <a class="subs" href="{{ url_for('choose_package', user=current_user, disease=disease) }}"> {{disease}} </a> </li>
                         {% endfor %}
                     </ul>
                 </div>

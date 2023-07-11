@@ -1,8 +1,19 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    send_from_directory,
+)
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3, os
 
 app = Flask(__name__, static_folder="assets")
+app.config["DOCS_FOLDER"] = os.path.join(
+    os.path.join(os.getcwd(), "Server"), "patient documents"
+)
+
 
 users = [
     ["ali", generate_password_hash("ali.password"), False],
@@ -11,24 +22,26 @@ users = [
     ["sajad", generate_password_hash("sajad.password"), True],
 ]
 
-supporters = [
-    "Pouya Fekri",
-    "Mohammad sajad Naghizadeh",
-    "Soudabeh Mohammad hashemi",
-    "Arash Mohammad poor",
-    "Matin Zamani",
-]
 
-
-SUPPORTER_INDEX = 0
 WRONG_PASSWORD = -1
 USER_UNDEFINED = -2
 DEAFAULT_VALUE = -3
 
 
-def calc_supporter_index():
-    SUPPORTER_INDEX = (SUPPORTER_INDEX + 1) % len(supporters)
-    return SUPPORTER_INDEX
+def assign_supporter():
+    conn = sqlite3.connect("./server/databases/supporters.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM mentors ORDER BY student_cnt ASC")
+    freest_supporter = list(cursor.fetchone())
+    cursor.execute(
+        "UPDATE mentors SET student_cnt = ? WHERE id = ?",
+        (freest_supporter[2] + 1, freest_supporter[0]),
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+    print(freest_supporter[1] + " assigned")  # sdgsdggggggggggggggggggs
+    return freest_supporter[1]
 
 
 def verify_password(username, password):
@@ -64,13 +77,13 @@ def index():
 def menu(user):
     is_verifier = get_role(user)
     if is_verifier:
-        return redirect(url_for("verify_package", user=user))
+        return redirect(url_for("verify_document", user=user))
     message = request.args.get("message", default=0, type=int)
     return render_template("actions.html", current_user=user, is_message=message)
 
 
 @app.route("/<user>/choose_disease")
-def disease_menu(user):
+def choose_disease(user):
     covered_diseases = [
         ["Infectious Diseases", ["Influenza", "Tuberculosis", "Malaria"]],
         ["Neurological Disorders", ["Alzheimer", "Stroke", "Epilepsy"]],
@@ -149,7 +162,6 @@ def fill_out_form(user, disease):
             conn.commit()
             cursor.close()
             conn.close()
-
             firstname = request.form["firstname"]
             lastname = request.form["lastname"]
             country = request.form["country"]
@@ -158,17 +170,17 @@ def fill_out_form(user, disease):
             file = request.files["file"]
             file_path = ""
             if file:
-                folder_path = (
-                    "./server/patient documents/"
-                    + user
-                    + "-"
+                file_name = (
+                    user
+                    + "(user)_"
                     + disease
-                    + "-"
+                    + ("(disease)_")
                     + str(package_id)
-                    + " (%user-%disease-%package_id)"
+                    + ("(packageId)")
+                    + "."
+                    + file.filename.rsplit(".", 1)[1]
                 )
-                file_path = folder_path + "/" + file.filename
-                os.mkdir(folder_path)
+                file_path = app.config["DOCS_FOLDER"] + "/" + file_name
                 file.save(file_path)
 
             conn = sqlite3.connect("./server/databases/patients.db")
@@ -183,7 +195,7 @@ def fill_out_form(user, disease):
                 zipcode,
                 disease,
                 extraDescription,
-                file_path,
+                file_name,
             )
             cursor.execute(insert_query, data)
             conn.commit()
@@ -201,32 +213,36 @@ def fill_out_form(user, disease):
         )
 
 
-@app.route("/<user>/verify_package", methods=["POST", "GET"])
-def verify_package(user):
+@app.route("/download_file/<path:filename>", methods=["POST", "GET"])
+def download_file(filename):
+    documents = os.path.join(app.root_path, app.config["DOCS_FOLDER"])
+    return send_from_directory(documents, filename, as_attachment=True)
+
+
+@app.route("/<user>/verify_document", methods=["POST", "GET"])
+def verify_document(user):
+    if request.method == "POST":
+        referrer = request.headers.get("Referer")
+        if referrer and referrer == request.url:
+            patient_id = request.form["patient_id"]
+            conn = sqlite3.connect("./server/databases/patients.db")
+            cursor = conn.cursor()
+            query = "UPDATE datas SET supporter = ? WHERE id = ?"
+            cursor.execute(query, (assign_supporter(), patient_id))
+            conn.commit()
+            cursor.close()
+            conn.close()
+
     conn = sqlite3.connect("./server/databases/patients.db")
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT firstname, lastname, country, zipcode, diseases, extra_description, evidence_path FROM datas WHERE supporter IS NULL"
+        "SELECT id, firstname, lastname, country, zipcode, diseases, extra_description, evidence_path FROM datas WHERE supporter IS NULL"
     )
-    rows = cursor.fetchall()
-    unverified_packages = []
-    for row in rows:
-        unverified_packages.append(row)
+    unverified_docs = cursor.fetchall()
     cursor.close()
     conn.close()
-
-    print(unverified_packages)
-    return render_template("verify.html", packages=unverified_packages)
+    return render_template("verify.html", current_user=user, docs=unverified_docs)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
-
-# verify package:
-
-# conn = sqlite3.connect("./server/databases/patients.db")
-# cursor = conn.cursor()
-# query = "UPDATE datas SET supporter = ? WHERE id = ?"
-# cursor.execute(query, (supporters[calc_supporter_index()], id))
-# conn.commit()
+    app.run(debug=True, port=5000, host="127.0.0.1")

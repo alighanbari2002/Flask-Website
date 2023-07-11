@@ -10,33 +10,37 @@
 </head>
 
 <body>
-    <div class="firstHero">List of Packages to be Verified</div>
+    <div class="firstHero">List of Documents to be Verified</div>
     <div class="listContainer">
         <div class="listItemContainer">
             
-            {% for p in packages %}
+            {% for d in docs %}
                 <div class="listItem">
                     <div class="profileContainer">
                         <img class="profileClass" src="{{ url_for('static', filename='images/profile.png') }}" alt="patient's profile">
                     </div>
-                    <p class="patientSpecs">Fullname: {{p[8]}}</p>
-                    <p class="patientSpecs">Country:</p>
-                    <p class="patientSpecs">Zipcode: </p>
-                    <p class="patientSpecs">Disease: </p>
-                    <p class="patientSpecs">Description: I had pneumonia for twelve years and I haven't had
-                        the funds to cure it. my doctors say I need inner lung surgery.
-                        I want to do a 5000$ surgery with 1000$ and put the rest of it in my pockets and go to hawaii with my grandchildren.
-                    </p>
+                    <p class="patientSpecs">Fullname: {{d[1]}} {{d[2]}}</p>
+                    <p class="patientSpecs">Country: {{d[3]}}</p>
+                    <p class="patientSpecs">Zipcode: {{d[4]}}</p>
+                    <p class="patientSpecs">Disease: {{d[5]}}</p>
+                    <p class="patientSpecs">Description: {{d[6]}}</p>
                     <div class="docBigContainer">
                         <div class="docContainer">
-                            <a class="docButton" href="#">Documents</a>
+                            <a class="docButton" href="{{url_for('download_file', filename=d[7])}}">Documents</a>
                         </div>
                     </div>
                     <div class="verifyBigContainer">
-                        <form action="/submit" method="POST">
-                            <input type="hidden" name="" id="">
-                            <input class="verifyButton" type="submit" value="Verify">
+                        <form id="myForm" action="{{ url_for('verify_document', user=current_user) }}" method="POST">
+                            <input type="hidden" name="patient_id" value="{{d[0]}}">
                         </form>
+
+                        <script>
+                            function submitForm() {
+                              document.getElementById("myForm").submit();
+                            }
+                        </script>
+
+                        <input onclick="submitForm()" class="verifyButton" type="submit" />
                     </div>
                 </div>
             {% endfor %}

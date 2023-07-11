@@ -42,7 +42,7 @@
         {% if is_empty %}
             <h1 style="color:red;">
                 Unfortunately, there is no specialist with free time for the disease you selected. <br />
-                back to <a href=" http://127.0.0.1:5000/{{current_user}}/choose_disease">choose disease</a> page.
+                back to <a href="{{ url_for('choose_disease', user=current_user) }}">choose disease</a> page.
             </h1>
         {% endif %}
     </div>
