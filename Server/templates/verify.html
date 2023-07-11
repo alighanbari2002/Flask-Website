@@ -24,9 +24,20 @@
                     <p class="patientSpecs">Zipcode: {{d[4]}}</p>
                     <p class="patientSpecs">Disease: {{d[5]}}</p>
                     <p class="patientSpecs">Description: {{d[6]}}</p>
+                    
                     <div class="docBigContainer">
                         <div class="docContainer">
-                            <a class="docButton" href="{{url_for('download_file', filename=d[7])}}">Documents</a>
+                            <a class="docButton" onclick="checkString('{{d[7]}}')">Documents</a>
+                            <script>
+                                function checkString(filePath) {
+                                    if (filePath.trim() === '!') {
+                                        alert('⚠️ No documents have been uploaded by the patient!');
+                                    } else {
+                                        var downloadUrl = "{{ url_for('download_file', filename='__PLACEHOLDER__') }}";
+                                        window.location.href = downloadUrl.replace('__PLACEHOLDER__', encodeURIComponent(filePath));
+                                    }
+                                }
+                            </script>
                         </div>
                     </div>
                     <div class="verifyBigContainer">

@@ -40,8 +40,14 @@ def assign_supporter():
     conn.commit()
     cursor.close()
     conn.close()
-    print(freest_supporter[1] + " assigned")  # sdgsdggggggggggggggggggs
     return freest_supporter[1]
+
+
+def get_role(username):
+    for i in range(len(users)):
+        if users[i][0] == username:
+            return users[i][2]
+    return "user do not exit!"
 
 
 def verify_password(username, password):
@@ -52,13 +58,6 @@ def verify_password(username, password):
             else:
                 return WRONG_PASSWORD
     return USER_UNDEFINED
-
-
-def get_role(username):
-    for i in range(len(users)):
-        if users[i][0] == username:
-            return users[i][2]
-    return "user do not exit!"
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -152,65 +151,66 @@ def choose_package(user, disease):
 def fill_out_form(user, disease):
     package_id = request.args.get("package_id", default=-1, type=int)
     if request.method == "POST":
-        action = request.form["action"]
-        if action == "Submit":
-            conn = sqlite3.connect("./server/databases/cure_packages.db")
-            cursor = conn.cursor()
-            cursor.execute(
-                "UPDATE packages SET patient = ? WHERE id = ?", (user, package_id)
-            )
-            conn.commit()
-            cursor.close()
-            conn.close()
-            firstname = request.form["firstname"]
-            lastname = request.form["lastname"]
-            country = request.form["country"]
-            zipcode = request.form["zipcode"]
-            extraDescription = request.form["extraDescription"]
-            file = request.files["file"]
-            file_path = ""
-            if file:
-                file_name = (
-                    user
-                    + "(user)_"
-                    + disease
-                    + ("(disease)_")
-                    + str(package_id)
-                    + ("(packageId)")
-                    + "."
-                    + file.filename.rsplit(".", 1)[1]
+        referrer = request.headers.get("Referer")
+        if referrer and referrer == request.url:
+            action = request.form["action"]
+            if action == "Submit":
+                conn = sqlite3.connect("./server/databases/cure_packages.db")
+                cursor = conn.cursor()
+                cursor.execute(
+                    "UPDATE packages SET patient = ? WHERE id = ?", (user, package_id)
                 )
-                file_path = app.config["DOCS_FOLDER"] + "/" + file_name
-                file.save(file_path)
+                conn.commit()
+                cursor.close()
+                conn.close()
+                firstname = request.form["firstname"]
+                lastname = request.form["lastname"]
+                country = request.form["country"]
+                zipcode = request.form["zipcode"]
+                extraDescription = request.form["extraDescription"]
+                file = request.files["file"]
+                file_name = "!"
+                if file:
+                    file_name = (
+                        user
+                        + "(user)_"
+                        + disease
+                        + ("(disease)_")
+                        + str(package_id)
+                        + ("(packageId)")
+                        + "."
+                        + file.filename.rsplit(".", 1)[1]
+                    )
+                    file_path = app.config["DOCS_FOLDER"] + "/" + file_name
+                    file.save(file_path)
 
-            conn = sqlite3.connect("./server/databases/patients.db")
-            cursor = conn.cursor()
-            insert_query = """
-                            INSERT INTO datas (firstname, lastname, country, zipcode, diseases, extra_description, evidence_path)
-                            VALUES (?, ?, ?, ?, ?, ?, ?)"""
-            data = (
-                firstname,
-                lastname,
-                country,
-                zipcode,
-                disease,
-                extraDescription,
-                file_name,
-            )
-            cursor.execute(insert_query, data)
-            conn.commit()
-            cursor.close()
-            conn.close()
-            return redirect(url_for("menu", user=user, message=1))
-        else:
-            return redirect(url_for("menu", user=user, message=0))
-    else:
-        return render_template(
-            "form.html",
-            current_user=user,
-            selected_disease=disease,
-            package_id=package_id,
-        )
+                conn = sqlite3.connect("./server/databases/patients.db")
+                cursor = conn.cursor()
+                insert_query = """
+                                INSERT INTO datas (firstname, lastname, country, zipcode, diseases, extra_description, evidence_path)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)"""
+                data = (
+                    firstname,
+                    lastname,
+                    country,
+                    zipcode,
+                    disease,
+                    extraDescription,
+                    file_name,
+                )
+                cursor.execute(insert_query, data)
+                conn.commit()
+                cursor.close()
+                conn.close()
+                return redirect(url_for("menu", user=user, message=1))
+        return redirect(url_for("menu", user=user, message=0))
+
+    return render_template(
+        "form.html",
+        current_user=user,
+        selected_disease=disease,
+        package_id=package_id,
+    )
 
 
 @app.route("/download_file/<path:filename>", methods=["POST", "GET"])
@@ -232,6 +232,7 @@ def verify_document(user):
             conn.commit()
             cursor.close()
             conn.close()
+            return redirect(url_for("verify_document", user=user))
 
     conn = sqlite3.connect("./server/databases/patients.db")
     cursor = conn.cursor()
