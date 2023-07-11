@@ -18,15 +18,9 @@
             </nav>
       </div>
 
-      {% if not is_alert %}
+      {% if is_message == 1 %}
             <script>
-                  var role = '';
-                  if ('{{ role|lower }}' == 'true') {
-                        role = 'verifier';
-                  } else {
-                        role = 'user';
-                  }
-                  alert('📢 Hey {{current_user}}, you logged in as a user.\n Welcome to the website!')
+                  alert('📢 Hey {{current_user}},\nYour documents have been sent to be verify by the verifier.')
             </script>
       {% endif %}
 

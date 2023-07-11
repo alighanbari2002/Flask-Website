@@ -10,11 +10,13 @@
 </head>
 
 {% if stat == -1 %}
-    <script>alert('⚠️ Your password is incorrect, please try again.')</script>
-{% endif %}
-
-{% if stat == -2 %}
-    <script>alert('⛔ Unfortunately, you are not a member of our website!')</script>
+    <script>
+        alert('⚠️ Your password is incorrect, please try again.')
+    </script>
+{% elif stat == -2 %}
+    <script>
+        alert('⛔ Unfortunately, you are not a member of our website!')
+    </script>
 {% endif %}
 
 <body>

@@ -62,13 +62,11 @@ def index():
 
 @app.route("/<user>/menu")
 def menu(user):
-    is_admin = get_role(user)
-    if is_admin:
+    is_verifier = get_role(user)
+    if is_verifier:
         return redirect(url_for("verify_package", user=user))
-    param = request.args.get("show", default=False, type=bool)
-    return render_template(
-        "actions.html", current_user=user, role=is_admin, is_alert=param
-    )
+    message = request.args.get("message", default=0, type=int)
+    return render_template("actions.html", current_user=user, is_message=message)
 
 
 @app.route("/<user>/choose_disease")
@@ -161,7 +159,13 @@ def fill_out_form(user, disease):
             file_path = ""
             if file:
                 folder_path = (
-                    "./server/patient documents/" + user + " (" + disease + ")"
+                    "./server/patient documents/"
+                    + user
+                    + "-"
+                    + disease
+                    + "-"
+                    + str(package_id)
+                    + " (%user-%disease-%package_id)"
                 )
                 file_path = folder_path + "/" + file.filename
                 os.mkdir(folder_path)
@@ -185,7 +189,9 @@ def fill_out_form(user, disease):
             conn.commit()
             cursor.close()
             conn.close()
-        return redirect(url_for("menu", user=user, show=True))
+            return redirect(url_for("menu", user=user, message=1))
+        else:
+            return redirect(url_for("menu", user=user, message=0))
     else:
         return render_template(
             "form.html",
