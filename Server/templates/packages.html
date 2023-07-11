@@ -20,10 +20,18 @@
                         <li class="listDesc">{{p[i+1]}}</li>
                     {% endfor %}
                 </ul>
-                <form action="/{{current_user}}/{{selected_disease}}/fill_out_form" method="POST`">
+
+                <form id="myForm" action="{{ url_for('choose_package', user=current_user, disease=selected_disease) }}" method="POST">
                     <input type="hidden" name="package" value="{{p[0]}}" placeholder="EnterData">
-                    <button class="chooseButton" type="submit">Choose</button>
                 </form>
+
+                <script>
+                    function submitForm() {
+                      document.getElementById("myForm").submit();
+                    }
+                  </script>
+
+                <button onclick="submitForm()" class="chooseButton" type="submit">Choose</button>
             </div>
         {% endfor %}
 

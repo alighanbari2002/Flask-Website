@@ -45,7 +45,7 @@ def get_role(username):
     for i in range(len(users)):
         if users[i][0] == username:
             return users[i][2]
-    return -1
+    return "user do not exit!"
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -62,11 +62,13 @@ def index():
 
 @app.route("/<user>/menu")
 def menu(user):
-    role = get_role(user)
-    if role == True:
+    is_admin = get_role(user)
+    if is_admin:
         return redirect(url_for("verify_package", user=user))
     param = request.args.get("show", default=False, type=bool)
-    return render_template("actions.html", current_user=user, role=role, is_alert=param)
+    return render_template(
+        "actions.html", current_user=user, role=is_admin, is_alert=param
+    )
 
 
 @app.route("/<user>/choose_disease")
@@ -106,33 +108,40 @@ def disease_menu(user):
     )
 
 
-@app.route("/<user>/<disease>/choose_package")
-def request_cure_package(user, disease):
-    conn = sqlite3.connect("./server/databases/cure_packages.db")
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT * FROM packages WHERE patient IS NULL AND disease = ?", (disease,)
-    )
-    available_packages = cursor.fetchall()
-    is_empty = False
-    if len(available_packages) == 0:
-        is_empty = True
-    cursor.close()
-    conn.close()
-    return render_template(
-        "packages.html",
-        packages=available_packages,
-        current_user=user,
-        selected_disease=disease,
-        is_empty=is_empty,
-    )
+@app.route("/<user>/<disease>/choose_package", methods=["POST", "GET"])
+def choose_package(user, disease):
+    if request.method == "POST":
+        package_id = request.form["package"]
+        return redirect(
+            url_for("fill_out_form", user=user, disease=disease, package_id=package_id)
+        )
+    else:
+        conn = sqlite3.connect("./server/databases/cure_packages.db")
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT * FROM packages WHERE patient IS NULL AND disease = ?", (disease,)
+        )
+        available_packages = cursor.fetchall()
+        is_empty = False
+        if len(available_packages) == 0:
+            is_empty = True
+        cursor.close()
+        conn.close()
+
+        return render_template(
+            "packages.html",
+            packages=available_packages,
+            current_user=user,
+            selected_disease=disease,
+            is_empty=is_empty,
+        )
 
 
 @app.route("/<user>/<disease>/fill_out_form", methods=["POST", "GET"])
 def fill_out_form(user, disease):
-    package_id = request.args.get("package", default=-1, type=int)
+    package_id = request.args.get("package_id", default=-1, type=int)
     if request.method == "POST":
-        action = request.form.get("action")
+        action = request.form["action"]
         if action == "Submit":
             conn = sqlite3.connect("./server/databases/cure_packages.db")
             cursor = conn.cursor()
@@ -177,29 +186,17 @@ def fill_out_form(user, disease):
             cursor.close()
             conn.close()
         return redirect(url_for("menu", user=user, show=True))
-
-    return render_template(
-        "form.html",
-        current_user=user,
-        selected_disease=disease,
-    )
+    else:
+        return render_template(
+            "form.html",
+            current_user=user,
+            selected_disease=disease,
+            package_id=package_id,
+        )
 
 
 @app.route("/<user>/verify_package", methods=["POST", "GET"])
 def verify_package(user):
-    conn = sqlite3.connect("./server/databases/cure_packages.db")
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT patient FROM packages WHERE patient IS NOT NULL AND is_verified = ?",
-        (0,),
-    )
-    rows = cursor.fetchall()
-    result = []
-    for row in rows:
-        result.append(row[0])
-    cursor.close()
-    conn.close()
-
     conn = sqlite3.connect("./server/databases/patients.db")
     cursor = conn.cursor()
     cursor.execute(
