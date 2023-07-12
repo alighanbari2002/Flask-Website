@@ -13,7 +13,8 @@
       <div class="nav-wrapper">
             <nav>
                   <a href="#" class="hover-this"><span style="font-family: Verdana, sans-serif;">Define Cure Package</span></a>
-                  <a href="http://127.0.0.1:5000/{{current_user}}/choose_disease" class="hover-this"><span style="color:yellow; font-family: Verdana, sans-serif;">Request Cure Package</span></a>
+                  <a href="{{ url_for('choose_disease', user=current_user) }}" class="hover-this"><span style="color:yellow; font-family: Verdana, sans-serif;">Request Cure Package</span></a>
+                  <a href="{{ url_for('notifications', user=current_user) }}" class="hover-this"><span style="color:yellow; font-family: Verdana, sans-serif;">Notifications</span></a>
                   <div class="cursor"></div>
             </nav>
       </div>
@@ -55,7 +56,6 @@
       window.addEventListener('mousemove', editCursor);
 
 })();
-
 </script>
 </body>
 

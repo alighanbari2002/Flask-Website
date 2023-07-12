@@ -1,0 +1,29 @@
+html, body {
+    font-family: sans-serif;
+    font-size: 1.2em;
+    background-image: url(../images/notify.jpg);
+    background-size: 100%;
+}
+
+.docButton{
+    color: rgb(37, 97, 247);
+    text-decoration: none;
+}
+
+.docButton:hover{
+    color: rgb(0, 0, 0);
+}
+
+.messages {
+    list-style-type: none;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.messages li {
+    background-color: #f2dede;
+    color: #a94442;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}

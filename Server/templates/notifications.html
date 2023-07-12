@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="15">
+    <title>Notifications</title>
+    <link rel="stylesheet"href="{{ url_for('static', filename='css/notifications_style.css') }}">
+</head>
+
+<body>
+    <ul class="messages">
+        {% if is_empty == 1 %}
+            <h1 style="color:rgb(255, 255, 255);">
+                There are no new announcements to show!
+            </h1>
+        {% else %}
+            {% for record in unannounced_messages %}
+                <li><h3>The 
+                    {% if record[2] != '!' %}
+                        <a class="docButton" href="{{ url_for('download_file', filename=record[2]) }}">document</a>
+                    {% else %}
+                        document
+                    {% endif %}                
+                    related to your {{record[1]}} sickness is confirmed by the verifier. ✅</h3></li>
+            {% endfor %}
+        {% endif %}  
+    </ul>
+</body>
+
+</html>

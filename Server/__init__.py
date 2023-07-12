@@ -14,14 +14,12 @@ app.config["DOCS_FOLDER"] = os.path.join(
     os.path.join(os.getcwd(), "Server"), "patient documents"
 )
 
-
 users = [
     ["ali", generate_password_hash("ali.password"), False],
     ["behrad", generate_password_hash("behrad.password"), False],
     ["javad", generate_password_hash("javad.password"), False],
     ["sajad", generate_password_hash("sajad.password"), True],
 ]
-
 
 WRONG_PASSWORD = -1
 USER_UNDEFINED = -2
@@ -43,6 +41,24 @@ def assign_supporter():
     return freest_supporter[1]
 
 
+def to_announce(user):
+    conn = sqlite3.connect("./server/databases/patients.db")
+    cursor = conn.cursor()
+    query = "SELECT id, diseases, evidence_path FROM datas WHERE supporter IS NOT NULL AND user = ? AND is_announced = ?"
+    cursor.execute(query, (user, 0))
+    unannounced_messages = cursor.fetchall()
+    for i in range(len(unannounced_messages)):
+        cursor.execute(
+            "UPDATE datas SET is_announced = ? WHERE id = ?",
+            (1, list(unannounced_messages[i])[0]),
+        )
+        conn.commit()
+    cursor.close()
+    conn.close()
+    unannounced_messages.reverse()
+    return unannounced_messages
+
+
 def get_role(username):
     for i in range(len(users)):
         if users[i][0] == username:
@@ -61,7 +77,7 @@ def verify_password(username, password):
 
 
 @app.route("/", methods=["POST", "GET"])
-def index():
+def login():
     status = DEAFAULT_VALUE
     if request.method == "POST":
         username = request.form["Username"]
@@ -78,7 +94,24 @@ def menu(user):
     if is_verifier:
         return redirect(url_for("verify_document", user=user))
     message = request.args.get("message", default=0, type=int)
-    return render_template("actions.html", current_user=user, is_message=message)
+    return render_template(
+        "actions.html",
+        current_user=user,
+        is_message=message,
+    )
+
+
+@app.route("/<user>/notifications")
+def notifications(user):
+    persons = to_announce(user)
+    is_empty = 0
+    if len(persons) == 0:
+        is_empty = 1
+    return render_template(
+        "notifications.html",
+        unannounced_messages=persons,
+        is_empty=is_empty,
+    )
 
 
 @app.route("/<user>/choose_disease")
@@ -187,9 +220,10 @@ def fill_out_form(user, disease):
                 conn = sqlite3.connect("./server/databases/patients.db")
                 cursor = conn.cursor()
                 insert_query = """
-                                INSERT INTO datas (firstname, lastname, country, zipcode, diseases, extra_description, evidence_path)
-                                VALUES (?, ?, ?, ?, ?, ?, ?)"""
+                    INSERT INTO datas (user, firstname, lastname, country, zipcode, diseases, extra_description, evidence_path, is_announced)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
                 data = (
+                    user,
                     firstname,
                     lastname,
                     country,
@@ -197,6 +231,7 @@ def fill_out_form(user, disease):
                     disease,
                     extraDescription,
                     file_name,
+                    0,
                 )
                 cursor.execute(insert_query, data)
                 conn.commit()
