@@ -6,24 +6,20 @@ from flask import (
     url_for,
     send_from_directory,
 )
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 import sqlite3, os
 
 app = Flask(__name__, static_folder="assets")
+
 app.config["DOCS_FOLDER"] = os.path.join(
     os.path.join(os.getcwd(), "Server"), "patient documents"
 )
 
-users = [
-    ["ali", generate_password_hash("ali.password"), False],
-    ["behrad", generate_password_hash("behrad.password"), False],
-    ["javad", generate_password_hash("javad.password"), False],
-    ["sajad", generate_password_hash("sajad.password"), True],
-]
-
-WRONG_PASSWORD = -1
-USER_UNDEFINED = -2
-DEAFAULT_VALUE = -3
+USER = 0
+VERIFIER = 1
+USER_UNDEFINED = -1
+WRONG_PASSWORD = -2
+NOTTHING = -3
 
 
 def assign_supporter():
@@ -59,40 +55,74 @@ def to_announce(user):
     return unannounced_messages
 
 
-def get_role(username):
-    for i in range(len(users)):
-        if users[i][0] == username:
-            return users[i][2]
-    return "user do not exit!"
+def login_validation(username, password):
+    conn = sqlite3.connect("./server/databases/users.db")
+    cursor = conn.cursor()
+    query = "SELECT id, password, role FROM userInfo WHERE username = ?"
+    cursor.execute(query, (username,))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if user is None:
+        return USER_UNDEFINED, NOTTHING
+    elif check_password_hash(user[1], password):
+        return user[0], user[2]
+    else:
+        return WRONG_PASSWORD, NOTTHING
 
 
-def verify_password(username, password):
-    for i in range(len(users)):
-        if users[i][0] == username:
-            if check_password_hash(users[i][1], password):
-                return i
-            else:
-                return WRONG_PASSWORD
-    return USER_UNDEFINED
+def signup_validation(username):
+    conn = sqlite3.connect("./server/databases/users.db")
+    cursor = conn.cursor()
+    query = "SELECT id FROM userInfo WHERE username = ?"
+    cursor.execute(query, (username,))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if user is None:
+        return USER_UNDEFINED
+    else:
+        return user[0]
 
 
 @app.route("/", methods=["POST", "GET"])
-def login():
-    status = DEAFAULT_VALUE
+def signup():
+    status = 0
     if request.method == "POST":
         username = request.form["Username"]
         password = request.form["Password"]
-        status = verify_password(username, password)
-        if status >= 0:
+        status = signup_validation(username)
+        if status == USER_UNDEFINED:
+            conn = sqlite3.connect("./server/databases/users.db")
+            cursor = conn.cursor()
+            insert_query = """INSERT INTO userInfo (username, password, role)
+                              VALUES (?, ?, ?);
+                           """
+            cursor.execute(insert_query, (username, password, USER))
+            conn.commit()
+            cursor.close()
+            conn.close()
             return redirect(url_for("menu", user=username))
+    return render_template("signup.Jinja2", stat=status)
+
+
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    status = 0
+    if request.method == "POST":
+        username = request.form["Username"]
+        password = request.form["Password"]
+        status, role = login_validation(username, password)
+        if status > 0:
+            if role == USER:
+                return redirect(url_for("menu", user=username))
+            elif role == VERIFIER:
+                return redirect(url_for("verify_document", user=username))
     return render_template("login.Jinja2", stat=status)
 
 
 @app.route("/<user>/menu")
 def menu(user):
-    is_verifier = get_role(user)
-    if is_verifier:
-        return redirect(url_for("verify_document", user=user))
     message = request.args.get("message", default=0, type=int)
     return render_template(
         "actions.Jinja2",
@@ -220,8 +250,9 @@ def fill_out_form(user, disease):
                 conn = sqlite3.connect("./server/databases/patients.db")
                 cursor = conn.cursor()
                 insert_query = """
-                    INSERT INTO datas (user, firstname, lastname, country, zipcode, diseases, extra_description, evidence_path, is_announced)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+                                  INSERT INTO datas (user, firstname, lastname, country, zipcode, diseases, extra_description, evidence_path, is_announced)
+                                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                               """
                 data = (
                     user,
                     firstname,

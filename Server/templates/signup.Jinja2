@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/signup_style.css') }}">
+</head>
+
+{% if stat > 0 %}
+    <script>
+        alert('🔴 This username is already registered in the website, please enter another one.')
+    </script>
+{% endif %}
+
+<body>
+    <div class="signupbar">
+        <form action="{{ url_for('signup') }}"" method="POST">
+            <input type="hidden" name="form" value="signup"><br>
+            <p class="params">Username:</p>
+            <input class="lbox" type="text" name="Username" placeholder="Enter Username" required>
+            <p class="params">Password:</p>
+            <input class="lbox" type="password" name="Password" placeholder="Enter Password" required><br /> 
+            <p class="params" style="color:rgb(13, 13, 80);">already have an account? <a href="{{ url_for('login') }}">click here</a>.</p>
+            <input class="signupbutton" type="submit" value="Signup">
+        </form>
+    </div>
+</body>
+
+</html>
