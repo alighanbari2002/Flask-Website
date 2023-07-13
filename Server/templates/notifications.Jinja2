@@ -12,7 +12,7 @@
     <ul class="messages">
         {% if is_empty == 1 %}
             <h1 style="color:rgb(255, 255, 255);">
-                There are no new announcements to show!
+                Apologies, but there are currently no new announcements available.
             </h1>
         {% else %}
             {% for record in unannounced_messages %}
@@ -22,7 +22,7 @@
                     {% else %}
                         document
                     {% endif %}                
-                    related to your {{record[1]}} sickness is confirmed by the verifier. ✅</h3></li>
+                    related to your {{record[1]}} sickness has been confirmed by the verifier. ✅</h3></li>
             {% endfor %}
         {% endif %}  
     </ul>

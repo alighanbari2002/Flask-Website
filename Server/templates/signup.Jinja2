@@ -9,9 +9,15 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/signup_style.css') }}">
 </head>
 
+{% if is_message == 1 %}
+    <script>
+        alert('⛔ Access to the site is restricted to registered users only. Please sign up or log in to continue using the site.')
+    </script>
+{% endif %}
+
 {% if stat > 0 %}
     <script>
-        alert('🔴 This username is already registered in the website, please enter another one.')
+        alert('🔴 Sorry, but this username is already taken. Please choose a different username.')
     </script>
 {% endif %}
 

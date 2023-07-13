@@ -41,7 +41,7 @@
 
         {% if is_empty %}
             <h1 style="color:red;">
-                Unfortunately, there is no specialist with free time for the disease you selected. <br />
+                Sorry, but there are currently no available specialists for the disease you have selected. <br />
                 back to <a href="{{ url_for('choose_disease', user=current_user) }}">choose disease</a> page.
             </h1>
         {% endif %}
