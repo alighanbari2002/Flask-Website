@@ -18,7 +18,7 @@ conn.commit()
 
 
 insert_query = """INSERT INTO userInfo (username, password, role)
-               VALUES (?, ?, ?);
+                  VALUES (?, ?, ?);
                """
 
 for i in range(4):

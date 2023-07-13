@@ -14,31 +14,42 @@ cursor.execute(
 
 conn.commit()
 
+insert_query = """INSERT INTO mentors (name, student_cnt)
+                  VALUES (?, ?);
+               """
+
 for i in range(5):
-    sqlite_insert_query = """INSERT INTO mentors (name, student_cnt)
-VALUES ('Pouya Fekri', '0');
-"""
+    data = (
+        "Pouya Fekri",
+        "0",
+    )
     if i == 0:
-        sqlite_insert_query = """INSERT INTO mentors (name, student_cnt)
-    VALUES ('Pouya Fekri', '0');
-    """
+        data = (
+            "Pouya Fekri",
+            "0",
+        )
     elif i == 1:
-        sqlite_insert_query = """INSERT INTO mentors (name, student_cnt)
-    VALUES ('Mohammad sajad Naghizadeh', '0');
-    """
+        data = (
+            "Mohammad sajad Naghizadeh",
+            "0",
+        )
     elif i == 2:
-        sqlite_insert_query = """INSERT INTO mentors (name, student_cnt)
-    VALUES ('Soudabeh Mohammad hashemi', '0');
-    """
+        data = (
+            "Soudabeh Mohammad hashemi",
+            "0",
+        )
     elif i == 3:
-        sqlite_insert_query = """INSERT INTO mentors (name, student_cnt)
-    VALUES ('Arash Mohammad poor', '0');
-    """
+        data = (
+            "Arash Mohammad poor",
+            "0",
+        )
     elif i == 4:
-        sqlite_insert_query = """INSERT INTO mentors (name, student_cnt)
-    VALUES ('Matin Zamani', '0');
-    """
-    cursor.execute(sqlite_insert_query)
+        data = (
+            "Matin Zamani",
+            "0",
+        )
+
+    cursor.execute(insert_query, data)
     conn.commit()
 
 cursor.close()
