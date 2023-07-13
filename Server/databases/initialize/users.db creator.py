@@ -10,14 +10,14 @@ cursor.execute(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL,
     password TEXT NOT NULL,
-    is_verifier INTEGER
+    role INTEGER
 );"""
 )
 
 conn.commit()
 
 
-insert_query = """INSERT INTO userInfo (username, password, is_verifier)
+insert_query = """INSERT INTO userInfo (username, password, role)
                VALUES (?, ?, ?);
                """
 
@@ -50,7 +50,7 @@ for i in range(4):
         data = (
             "sajad",
             generate_password_hash("sajad.password"),
-            0,
+            1,
         )
 
     cursor.execute(insert_query, data)
