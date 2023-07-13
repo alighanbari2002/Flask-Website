@@ -85,7 +85,7 @@ def login():
         status = verify_password(username, password)
         if status >= 0:
             return redirect(url_for("menu", user=username))
-    return render_template("login.html", stat=status)
+    return render_template("login.Jinja2", stat=status)
 
 
 @app.route("/<user>/menu")
@@ -95,7 +95,7 @@ def menu(user):
         return redirect(url_for("verify_document", user=user))
     message = request.args.get("message", default=0, type=int)
     return render_template(
-        "actions.html",
+        "actions.Jinja2",
         current_user=user,
         is_message=message,
     )
@@ -108,7 +108,7 @@ def notifications(user):
     if len(persons) == 0:
         is_empty = 1
     return render_template(
-        "notifications.html",
+        "notifications.Jinja2",
         unannounced_messages=persons,
         is_empty=is_empty,
     )
@@ -147,7 +147,7 @@ def choose_disease(user):
         ],
     ]
     return render_template(
-        "diseases.html", diseases=covered_diseases, current_user=user
+        "diseases.Jinja2", diseases=covered_diseases, current_user=user
     )
 
 
@@ -172,7 +172,7 @@ def choose_package(user, disease):
         conn.close()
 
         return render_template(
-            "packages.html",
+            "packages.Jinja2",
             packages=available_packages,
             current_user=user,
             selected_disease=disease,
@@ -241,7 +241,7 @@ def fill_out_form(user, disease):
         return redirect(url_for("menu", user=user, message=0))
 
     return render_template(
-        "form.html",
+        "form.Jinja2",
         current_user=user,
         selected_disease=disease,
         package_id=package_id,
@@ -277,7 +277,7 @@ def verify_document(user):
     unverified_docs = cursor.fetchall()
     cursor.close()
     conn.close()
-    return render_template("verify.html", current_user=user, docs=unverified_docs)
+    return render_template("verify.Jinja2", current_user=user, docs=unverified_docs)
 
 
 if __name__ == "__main__":
