@@ -25,7 +25,7 @@ logged_in_users = {}
 
 
 def assign_supporter():
-    conn = sqlite3.connect("./server/databases/supporters.db")
+    conn = sqlite3.connect("./Server/databases/supporters.db")
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM mentors ORDER BY student_cnt ASC")
     freest_supporter = list(cursor.fetchone())
@@ -40,7 +40,7 @@ def assign_supporter():
 
 
 def to_announce(user):
-    conn = sqlite3.connect("./server/databases/patients.db")
+    conn = sqlite3.connect("./Server/databases/patients.db")
     cursor = conn.cursor()
     query = "SELECT id, diseases, evidence_path FROM datas WHERE supporter IS NOT NULL AND user = ? AND is_announced = ?"
     cursor.execute(query, (user, 0))
@@ -58,7 +58,7 @@ def to_announce(user):
 
 
 def login_validation(username, password):
-    conn = sqlite3.connect("./server/databases/users.db")
+    conn = sqlite3.connect("./Server/databases/users.db")
     cursor = conn.cursor()
     query = "SELECT id, password, role FROM userInfo WHERE username = ?"
     cursor.execute(query, (username,))
@@ -74,7 +74,7 @@ def login_validation(username, password):
 
 
 def signup_validation(username):
-    conn = sqlite3.connect("./server/databases/users.db")
+    conn = sqlite3.connect("./Server/databases/users.db")
     cursor = conn.cursor()
     query = "SELECT id FROM userInfo WHERE username = ?"
     cursor.execute(query, (username,))
@@ -105,7 +105,7 @@ def signup():
         status = signup_validation(username)
         if status == USER_UNDEFINED:
             logged_in_users[username] = True
-            conn = sqlite3.connect("./server/databases/users.db")
+            conn = sqlite3.connect("./Server/databases/users.db")
             cursor = conn.cursor()
             insert_query = """INSERT INTO userInfo (username, password, role)
                               VALUES (?, ?, ?);
@@ -224,7 +224,7 @@ def choose_package(user, disease):
             url_for("fill_out_form", user=user, disease=disease, package_id=package_id)
         )
     else:
-        conn = sqlite3.connect("./server/databases/cure_packages.db")
+        conn = sqlite3.connect("./Server/databases/cure_packages.db")
         cursor = conn.cursor()
         cursor.execute(
             "SELECT * FROM packages WHERE patient IS NULL AND disease = ?", (disease,)
@@ -255,7 +255,7 @@ def fill_out_form(user, disease):
         if referrer and referrer == request.url:
             action = request.form["action"]
             if action == "Submit":
-                conn = sqlite3.connect("./server/databases/cure_packages.db")
+                conn = sqlite3.connect("./Server/databases/cure_packages.db")
                 cursor = conn.cursor()
                 cursor.execute(
                     "UPDATE packages SET patient = ? WHERE id = ?", (user, package_id)
@@ -284,7 +284,7 @@ def fill_out_form(user, disease):
                     file_path = app.config["DOCS_FOLDER"] + "/" + file_name
                     file.save(file_path)
 
-                conn = sqlite3.connect("./server/databases/patients.db")
+                conn = sqlite3.connect("./Server/databases/patients.db")
                 cursor = conn.cursor()
                 insert_query = """
                                   INSERT INTO datas (user, firstname, lastname, country, zipcode, diseases, extra_description, evidence_path, is_announced)
@@ -330,7 +330,7 @@ def verify_document(user):
         referrer = request.headers.get("Referer")
         if referrer and referrer == request.url:
             patient_id = request.form["patient_id"]
-            conn = sqlite3.connect("./server/databases/patients.db")
+            conn = sqlite3.connect("./Server/databases/patients.db")
             cursor = conn.cursor()
             query = "UPDATE datas SET supporter = ? WHERE id = ?"
             cursor.execute(query, (assign_supporter(), patient_id))
@@ -339,7 +339,7 @@ def verify_document(user):
             conn.close()
             return redirect(url_for("verify_document", user=user))
 
-    conn = sqlite3.connect("./server/databases/patients.db")
+    conn = sqlite3.connect("./Server/databases/patients.db")
     cursor = conn.cursor()
     cursor.execute(
         "SELECT id, firstname, lastname, country, zipcode, diseases, extra_description, evidence_path FROM datas WHERE supporter IS NULL"
