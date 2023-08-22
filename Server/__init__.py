@@ -95,6 +95,15 @@ def not_logged_in(user):
     return False
 
 
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, "assets"),
+        "favicon.ico",
+        mimetype="image/vnd.microsoft.icon",
+    )
+
+
 @app.route("/", methods=["POST", "GET"])
 def login():
     message = request.args.get("message", default=0, type=int)
