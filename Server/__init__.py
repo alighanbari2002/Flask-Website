@@ -96,8 +96,24 @@ def not_logged_in(user):
 
 
 @app.route("/", methods=["POST", "GET"])
-def signup():
+def login():
     message = request.args.get("message", default=0, type=int)
+    status = 0
+    if request.method == "POST":
+        username = request.form["Username"]
+        password = request.form["Password"]
+        status, role = login_validation(username, password)
+        if status > 0:
+            logged_in_users[username] = True
+            if role == USER:
+                return redirect(url_for("menu", user=username))
+            elif role == VERIFIER:
+                return redirect(url_for("verify_document", user=username))
+    return render_template("login.Jinja2", stat=status, is_message=message)
+
+
+@app.route("/signup", methods=["POST", "GET"])
+def signup():
     status = 0
     if request.method == "POST":
         username = request.form["Username"]
@@ -117,41 +133,28 @@ def signup():
             cursor.close()
             conn.close()
             return redirect(url_for("menu", user=username))
-    return render_template(
-        "signup.Jinja2",
-        stat=status,
-        is_message=message,
-    )
+    return render_template("signup.Jinja2", stat=status)
 
 
-@app.route("/login", methods=["POST", "GET"])
-def login():
-    status = 0
-    if request.method == "POST":
-        username = request.form["Username"]
-        password = request.form["Password"]
-        status, role = login_validation(username, password)
-        if status > 0:
-            logged_in_users[username] = True
-            if role == USER:
-                return redirect(url_for("menu", user=username))
-            elif role == VERIFIER:
-                return redirect(url_for("verify_document", user=username))
-    return render_template("login.Jinja2", stat=status)
+@app.route("/<user>")
+def panel(user):
+    if not_logged_in(user):
+        return redirect(url_for("login", message=1))
+    return redirect(url_for("menu", user=user))
 
 
 @app.route("/<user>/logout")
 def logout(user):
     if not_logged_in(user):
-        return redirect(url_for("signup", message=1))
+        return redirect(url_for("login", message=1))
     logged_in_users[user] = False
-    return redirect(url_for("signup"))
+    return redirect(url_for("login"))
 
 
 @app.route("/<user>/menu")
 def menu(user):
     if not_logged_in(user):
-        return redirect(url_for("signup", message=1))
+        return redirect(url_for("login", message=1))
     message = request.args.get("message", default=0, type=int)
     return render_template(
         "actions.Jinja2",
@@ -163,7 +166,7 @@ def menu(user):
 @app.route("/<user>/notifications")
 def notifications(user):
     if not_logged_in(user):
-        return redirect(url_for("signup", message=1))
+        return redirect(url_for("login", message=1))
     persons = to_announce(user)
     is_empty = 0
     if len(persons) == 0:
@@ -178,7 +181,7 @@ def notifications(user):
 @app.route("/<user>/choose_disease")
 def choose_disease(user):
     if not_logged_in(user):
-        return redirect(url_for("signup", message=1))
+        return redirect(url_for("login", message=1))
     covered_diseases = [
         ["Infectious Diseases", ["Influenza", "Tuberculosis", "Malaria"]],
         ["Neurological Disorders", ["Alzheimer", "Stroke", "Epilepsy"]],
@@ -217,7 +220,7 @@ def choose_disease(user):
 @app.route("/<user>/<disease>/choose_package", methods=["POST", "GET"])
 def choose_package(user, disease):
     if not_logged_in(user):
-        return redirect(url_for("signup", message=1))
+        return redirect(url_for("login", message=1))
     if request.method == "POST":
         package_id = request.form["package"]
         return redirect(
@@ -248,7 +251,7 @@ def choose_package(user, disease):
 @app.route("/<user>/<disease>/fill_out_form", methods=["POST", "GET"])
 def fill_out_form(user, disease):
     if not_logged_in(user):
-        return redirect(url_for("signup", message=1))
+        return redirect(url_for("login", message=1))
     package_id = request.args.get("package_id", default=-1, type=int)
     if request.method == "POST":
         referrer = request.headers.get("Referer")
@@ -325,7 +328,7 @@ def download_file(filename):
 @app.route("/<user>/verify_document", methods=["POST", "GET"])
 def verify_document(user):
     if not_logged_in(user):
-        return redirect(url_for("signup", message=1))
+        return redirect(url_for("login", message=1))
     if request.method == "POST":
         referrer = request.headers.get("Referer")
         if referrer and referrer == request.url:

@@ -9,6 +9,12 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login_style.css') }}">
 </head>
 
+{% if is_message == 1 %}
+    <script>
+        alert('⛔ Access to the site is restricted to registered users only. Please sign up or log in to continue using the site.')
+    </script>
+{% endif %}
+
 {% if stat == -1 %}
     <script>
         alert('⛔ Sorry, but you do not have membership access to our website.')
@@ -27,6 +33,7 @@
             <input class="lbox" type="text" name="Username" placeholder="Enter Username" required>
             <p class="params">Password:</p>
             <input class="lbox" type="password" name="Password" placeholder="Enter Password" required> <br />  
+            <p class="params" style="color:rgb(13, 13, 80);"> Don't have an account? <a href="{{ url_for('signup') }}"> Sign up </a></p>
             <input class="loginbutton" type="submit" value="Login">
         </form>
     </div>
